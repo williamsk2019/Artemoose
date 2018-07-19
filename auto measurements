@@ -1,0 +1,9 @@
+-switch: 9in standing height
+-auto line = 120 in
+-switch FROM WALL = 140 in
+//can the robot launch cube to score with bumpers just over auto line??
+-switch to side 168 in
+-extra cubes between 196 and 261.47 in 
+//collect cube from angle on corner for faster delivery??
+
+Cube = 13x13x11
