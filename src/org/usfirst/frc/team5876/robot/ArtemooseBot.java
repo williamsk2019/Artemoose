@@ -31,7 +31,7 @@ public class ArtemooseBot {
 	  //accelerometer, gyro and encoder
 	  ADXRS450_Gyro gyro;
 	  BuiltInAccelerometer accel;
-	  Encoder encoder;
+	  //Encoder encoder;
 
 	  //timer
 	  Timer timer;
@@ -57,14 +57,14 @@ public class ArtemooseBot {
 	  
 	    accel = new BuiltInAccelerometer();
 	
-	    encoder = new Encoder(0, 1, false, Encoder.EncodingType.k4X);
+	  //  encoder = new Encoder(0, 1, false, Encoder.EncodingType.k4X);
 	    
 	    timer = new Timer();
 	
 	    gyro = new ADXRS450_Gyro();
 	    gyro.calibrate();
 	
-	    CameraServer.getInstance().startAutomaticCapture();
+	  //  CameraServer.getInstance().startAutomaticCapture();
 	}
 	
 	void arcadeDrive(double xSpeed, double zRotation, boolean squareInput) {
@@ -75,17 +75,18 @@ public class ArtemooseBot {
 		robotDriveBase.tankDrive(leftSpeed, rightSpeed);
 	}
 	
-	boolean driveForward(int distance , double timeout) { //function to reach goal distance (inches)
-		  encoder.reset();
+	boolean driveForward(int time, double timeout) { //function to reach goal distance (inches)
+		 // encoder.reset();
 		  Timer timerDrive = new Timer();
 		  timerDrive.start();
-		  encoder.setDistancePerPulse(18.85); //18.85 = distance of rotation 
+		//  encoder.setDistancePerPulse(18.85); //18.85 = distance of rotation 
 		  
-		  double travel = encoder.getDistance(); //amount travelled
+		  double timed = timerDrive.get(); //amount travelled
 		  
-		  while(travel < distance && timerDrive.get() < timeout) { //allows amount travelled to reach goal distance 
+		  while(timed < time ) { //allows amount travelled to reach goal distance 
 			  robotDriveBase.arcadeDrive( -0.5 , 0);  
-			  travel = encoder.getDistance();
+			 // travel = encoder.getDistance();
+			  timed = timerDrive.get();
 		  }
 		  if (timerDrive.get() < timeout) {
 			  return true; //completed within timeout limit
@@ -95,15 +96,15 @@ public class ArtemooseBot {
 		  }
 	  } //end void driveForward()
 	  
-	  boolean driveForwardWithGyro(int distance , double timeout) { //function to reach goal distance (inches)
-		  encoder.reset();
+	  boolean driveForwardWithGyro(int time, double timeout) { //function to reach goal distance (inches)
+		 // encoder.reset();
 		  Timer timerDrive = new Timer();
 		  timerDrive.start();
-		  encoder.setDistancePerPulse(18.85); //18.85 = distance of rotation 
+		 // encoder.setDistancePerPulse(18.85); //18.85 = distance of rotation 
 		  
-		  double travel = encoder.getDistance(); //amount travelled
+		  double timed = timerDrive.get(); //amount travelled
 		  
-		  while(travel < distance && timerDrive.get() < timeout) { //allows amount travelled to reach goal distance 
+		  while(timed < time ) { //allows amount travelled to reach goal distance 
 			  
 			  double angle = gyro.getAngle();
 				double Kp = 0.05;
@@ -111,7 +112,7 @@ public class ArtemooseBot {
 				
 				
 				Timer.delay(0.01);
-				travel = encoder.getDistance();
+				timed = timerDrive.get();
 		  }
 		  if (timerDrive.get() < timeout) {
 			  return true; //completed within timeout limit
@@ -145,22 +146,36 @@ public class ArtemooseBot {
 		  }
 	  } //end void turn()
 	  
-	  void crabWheels(){
+	  void crabWheelsIn(){
 		  crabWheelsRight.set(0.5);
+		  crabWheelsLeft.set(-0.5);
+	  }
+	  
+	  void crabWheelsOut(){
+		  crabWheelsRight.set(-0.5);
 		  crabWheelsLeft.set(0.5);
 	  }
 	  
+	  void crabWheelsStop(){
+		  crabWheelsRight.set(0);
+		  crabWheelsLeft.set(0);
+	  }
+	  
 	  void pulleyForward(){
-		  pulley.set(0.5);
+		  pulley.set(1);
 	  }
 	  
 	  void pulleyBack(){
-		  pulley.set(-0.5);
+		  pulley.set(-1);
 	  }
 	
+	  void pulleyStop(){
+		  pulley.set(0);
+	  }
+	  
 	void prepareForAuto() {
 		gyro.reset();
-		encoder.reset();
+		//encoder.reset();
 	}
 
 }

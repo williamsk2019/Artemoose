@@ -18,7 +18,7 @@ public class AutoDriveForward extends AutoTemplate{
     	System.out.println("Baseline");
 		 System.out.println("X=" + Moose.accel.getX() + ", Y=" + Moose.accel.getY() + ", Z=" + Moose.accel.getZ() + ", gyro=" + Moose.gyro.getAngle());
 
-		 Moose.driveForwardWithGyro(120, 15);
+		 Moose.driveForwardWithGyro(8, 8);
     }
 	
 }

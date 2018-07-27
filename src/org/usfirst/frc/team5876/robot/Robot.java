@@ -4,22 +4,16 @@ import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import java.util.ArrayList;
-import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 
 
 
 public class Robot extends IterativeRobot {
 
   Controls driverStationControllers;
-  ArtemooseBot robot;
-  AutoManager autonomousPlans;
-  AutoTemplate selectedAutonomous;
-  
-  	final Integer AutoDriveForward = new Integer(0);
-	final Integer AutoLeftToSwitch = new Integer(1);
-	final Integer AutoRightToSwitch = new Integer(2);
-	Integer autoSelected;
-
+  ArtemooseBot Moose;
+//  AutoManager autonomousPlans;
+ // AutoTemplate selectedAutonomous;
+  Timer robotTimer;
 
   //now we need the autonomous mode chooser....
 
@@ -27,40 +21,64 @@ public class Robot extends IterativeRobot {
    * Variables needed for Autonomous
    */
   String autoSelection;
-  SendableChooser<Integer> chooser = new SendableChooser<Integer>();
+  SendableChooser autonomousCodeChooser = new SendableChooser();
 
   /**
-   * set up the robot parameters, camperas, etc... once it is turned on.
+   * set up the robot parameters, cameras, etc... once it is turned on.
    */
   @Override
   public void robotInit() {
     //the robot with all the motors and sensors available
-    robot = new ArtemooseBot();
+    Moose = new ArtemooseBot();
 
     //the joystick controlls and mappings for instructions
     driverStationControllers = new Controls();
+
+    /**
+     * Auto code section to add different autonomous plans (without code crashing if error)
+     */
+    //-------------------------
+    //lets add a default option.
+    //-------------------------
+    try{
+      autonomousCodeChooser.addDefault("forward",new AutoDriveForward());
+    }
+    catch(Exception e){
+      System.out.println("unable to add --forward-- to auto chooser... perhaps there is a code error in that auto class?");
+      e.printStackTrace();
+    }
     
-    chooser.addDefault("Middle Gear", AutoDriveForward);
-	 chooser.addObject("Right Gear", AutoLeftToSwitch);
-	 chooser.addObject("Left Gear", AutoRightToSwitch);
-	 SmartDashboard.putData("Auto choices", chooser);
+    //-------------------------
+    //lets add a default option.
+    //-------------------------
+    try{
+      autonomousCodeChooser.addDefault("left",new AutoLeftToSwitch());
+    }
+    catch(Exception e){
+      System.out.println("unable to add --left-- to auto chooser... perhaps there is a code error in that auto class?");
+      e.printStackTrace();
+    }
 
-    //the collection of autonomous plans (classes)
-//    autonomousPlans = new AutoManager();
-//    autonomousPlans.registerPlan("AutoCentreToSwitch");
-//    autonomousPlans.registerPlan("AutoDriveForward");
-//    autonomousPlans.registerPlan("AutoLeftToSwitch");
-//    autonomousPlans.registerPlan("AutoRightToSwitch");
+    //-------------------------
+    //lets add an auto to go to the switch from the centre.
+    //-------------------------
+    try{
+      autonomousCodeChooser.addDefault("right",new AutoRightToSwitch());
+    }
+    catch(Exception e){
+      System.out.println("unable to add --right-- to auto chooser... perhaps there is a code error in that auto class?");
+      e.printStackTrace();
+    }
 
+    
+    /*add more auto code choices here...*/
 
-    //get the list of registered auto classes and send them as options for the SmartDashboard selector
-    //ArrayList<String> autonomousPlansList = autonomousPlans.getRegisteredPlansList();
-//
-//    for ( String planName : autonomousPlansList) {
-//      chooser.addObject(planName,planName);
-//    }
-//
-//    SmartDashboard.putData("Auto choices", chooser);
+    SmartDashboard.putData("AutoChoices",autonomousCodeChooser);
+
+    robotTimer = new Timer();
+    robotTimer.start();
+    // this will give time between init and auto init... gyro drift?
+
 
   } // end robotInit()
 
@@ -72,43 +90,44 @@ public class Robot extends IterativeRobot {
    */
   @Override
   public void autonomousInit() {
+	  Moose.prepareForAuto();
 
-        System.out.println("Getting Auto selection from dashboard");
+    System.out.println("Getting Auto selection from dashboard...");
 
-        autoSelected = chooser.getSelected();
+ //   selectedAutonomous = (AutoTemplate) autonomousCodeChooser.getSelected();
 
-        System.out.println("Auto selected was: " + autoSelection);
-        System.out.println("Loading Auto Plan...");
+  //  if(selectedAutonomous!=null){
+  //    System.out.println("Selected Autonomous is Loaded... and not empty");
+   // }
+//    else{
+//      System.out.println("ALERT: Selected Autonomous is empty????");
+//      System.out.println("ALERT: Selected Autonomous is empty????");
+//      System.out.println("ALERT: Selected Autonomous is empty????");
+//      System.out.println("ALERT: Selected Autonomous is empty????");
+//      System.out.println("ALERT: Selected Autonomous is empty????");
+//    }
 
-  //  selectedAutonomous = autonomousPlans.getAutoPlan(autoSelection);
+  //  System.out.println("Running Auto Init Code...");
 
-       // System.out.println("Running Auto Init Code...");
+ //   selectedAutonomous.autonomousInitCode(Moose); 
 
-  //  selectedAutonomous.autonomousInitCode(robot);
-
-     //   System.out.println("Auto Init Code Completed!");
+  //  System.out.println("Auto Init Code Completed!");
 
   } // end autonomousInit()
 
 
   /**
    * this function is called multiple times during autonomous. In this function,
-   * get all inputs, check timers, and then adjust robot movements as needed
+   * get all inputs, check timers, and then adjust robout movements as needed
    * based on checks / timers / stage in process
    */
   @Override
   public void autonomousPeriodic() {
 
     System.out.println("Running Auto Periodic Code");
-    switch (autoSelected) {
-	case 0: //AutoDriveForward 
-		break;
-	case 1: //AutoLeftToSwitch
-		break;
-	case 2: //AutoRightToSwitch
-		break;
+   // selectedAutonomous.autonomousPeriodicCode(Moose);
 
-  } // end autonomousPeriodic()
+} // end autonomousPeriodic()
 
 
   /**
@@ -117,15 +136,17 @@ public class Robot extends IterativeRobot {
    */
   @Override
   public void teleopPeriodic() {
+	  double angle = Moose.gyro.getAngle();
+		//System.out.println("Timer, " + robotTimer.get() + ", Gyro angle, " + angle + ", measured");
 
-    driverStationControllers.updateControls(robot);
+    driverStationControllers.updateControls(Moose);
   } // end teleopPeriodic()
 
   @Override
   public void testPeriodic() {
 
-    LiveWindow.run();
-
+    //driverStationControllers.updateControls(fawkes);
+    //
   } // end testPeriodic()
 
 } // end RobotMain class definitions
