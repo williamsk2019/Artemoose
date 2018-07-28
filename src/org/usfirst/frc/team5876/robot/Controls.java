@@ -71,7 +71,7 @@ public class Controls {
 		    
 		      //drive the robot as normal
 		    
-		    Moose.arcadeDrive(-(gamepadController.getRawAxis(1)), (gamepadController.getRawAxis(4)), true);
+		    Moose.arcadeDrive(-(gamepadController.getRawAxis(1)*4/5), (gamepadController.getRawAxis(4)*4/5), true);
 		     // end if/else -- for slow or normal drive
 
 		    //End code for driving

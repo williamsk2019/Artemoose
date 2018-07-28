@@ -81,14 +81,16 @@ public class ArtemooseBot {
 		  timerDrive.start();
 		//  encoder.setDistancePerPulse(18.85); //18.85 = distance of rotation 
 		  
-		  double timed = timerDrive.get(); //amount travelled
-		  
-		  while(timed < time ) { //allows amount travelled to reach goal distance 
-			  robotDriveBase.arcadeDrive( -0.5 , 0);  
+		  double timed = timerDrive.get(); //time travelled
+//		 timerDrive.delay(8); 
+		  if(timed < time ) { //allows amount travelled to reach goal distance 
+			  robotDriveBase.arcadeDrive(0.5 , 0);  
 			 // travel = encoder.getDistance();
+			  System.out.println(timerDrive.get());
 			  timed = timerDrive.get();
 		  }
-		  if (timerDrive.get() < timeout) {
+		  robotDriveBase.arcadeDrive(0,0);
+		  if (timerDrive.get() <= timeout) {
 			  return true; //completed within timeout limit
 		  }
 		  else {
@@ -104,11 +106,11 @@ public class ArtemooseBot {
 		  
 		  double timed = timerDrive.get(); //amount travelled
 		  
-		  while(timed < time ) { //allows amount travelled to reach goal distance 
+		  if(timed < time ) { //allows amount travelled to reach goal distance 
 			  
 			  double angle = gyro.getAngle();
 				double Kp = 0.05;
-				robotDriveBase.arcadeDrive(-0.5, angle * Kp);
+				robotDriveBase.arcadeDrive(0.5, angle * Kp);
 				
 				
 				Timer.delay(0.01);
@@ -129,12 +131,12 @@ public class ArtemooseBot {
 		  
 		  double turned = gyro.getAngle(); //amount turned
 		  
-		  while(turned < angle && timerTurn.get() < timeout) { 
+		  if(turned < angle && timerTurn.get() < timeout) { 
 		  robotDriveBase.arcadeDrive(0, 0.4);
 		  turned = gyro.getAngle();
 		  }
 		  									//two situations where amount turned reaches goal angle
-		  while (turned > angle && timerTurn.get() < timeout) {
+		  else if(turned > angle && timerTurn.get() < timeout) {
 			  robotDriveBase.arcadeDrive(0,-0.4);
 			  turned = gyro.getAngle();
 		  }

@@ -12,7 +12,7 @@ public class Robot extends IterativeRobot {
   Controls driverStationControllers;
   ArtemooseBot Moose;
 //  AutoManager autonomousPlans;
- // AutoTemplate selectedAutonomous;
+  AutoTemplate selectedAutonomous;
   Timer robotTimer;
 
   //now we need the autonomous mode chooser....
@@ -94,7 +94,7 @@ public class Robot extends IterativeRobot {
 
     System.out.println("Getting Auto selection from dashboard...");
 
- //   selectedAutonomous = (AutoTemplate) autonomousCodeChooser.getSelected();
+   selectedAutonomous = (AutoTemplate) autonomousCodeChooser.getSelected();
 
   //  if(selectedAutonomous!=null){
   //    System.out.println("Selected Autonomous is Loaded... and not empty");
@@ -125,7 +125,7 @@ public class Robot extends IterativeRobot {
   public void autonomousPeriodic() {
 
     System.out.println("Running Auto Periodic Code");
-   // selectedAutonomous.autonomousPeriodicCode(Moose);
+   selectedAutonomous.autonomousPeriodicCode(Moose);
 
 } // end autonomousPeriodic()
 

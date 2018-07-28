@@ -17,8 +17,11 @@ public class AutoDriveForward extends AutoTemplate{
     public void autonomousPeriodicCode(ArtemooseBot Moose){
     	System.out.println("Baseline");
 		 System.out.println("X=" + Moose.accel.getX() + ", Y=" + Moose.accel.getY() + ", Z=" + Moose.accel.getZ() + ", gyro=" + Moose.gyro.getAngle());
-
-		 Moose.driveForwardWithGyro(8, 8);
+		 
+		 boolean completed = Moose.driveForward(8,8); //14 ft within 5 seconds
+		 if (completed == true) {
+			Moose.robotDriveBase.arcadeDrive(0,0);
+		 }
     }
 	
 }

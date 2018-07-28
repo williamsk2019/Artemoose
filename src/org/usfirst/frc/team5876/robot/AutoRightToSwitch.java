@@ -35,7 +35,7 @@ public class AutoRightToSwitch extends AutoTemplate{
 	
 	//otherwise drive forward over baseline
 		 else {
-			Moose.driveForwardWithGyro(120, 15);
+			Moose.driveForward(120, 15);
 		 }
     }
 	
